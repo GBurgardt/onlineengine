@@ -5,7 +5,7 @@ class Tile extends Component {
 
     render() {
         return (
-            <img className={this.props.class || 'Tile'} src={this.props.img} onClick={this.props.onClickTile}/>
+            <img className={this.props.class || 'Tile'} src={this.props.img} onClick={this.props.onClickTile} alt={''}/>
         );
     }
 }

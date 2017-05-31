@@ -4,7 +4,7 @@ import { Well } from 'react-bootstrap';
 class Map extends Component {
     render() {
         return (   
-            <Well>{this.props.tiles}</Well>
+            <Well>{this.props.map}</Well>
         );
     }
 }

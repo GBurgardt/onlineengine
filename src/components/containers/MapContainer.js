@@ -1,6 +1,5 @@
 /*eslint no-restricted-globals: ["error", "event"]*/
 import React, { Component } from 'react';
-import  EditMode from '../views/EditMode/EditMode';
 import Tile from '../views/Tile/Tile';
 import Map from '../views/Map/Map';
 import EditModeContainer from './EditModeContainer'
@@ -12,35 +11,49 @@ class MapContainer extends Component {
     constructor(props){
         super(props);
         this.state = {
-            tiles: this.generateEmptyTiles()
+            open: false,
+            actualMap: this.paintAllMap(tileset('./tile-19.png'))
         };
     }
 
     onClickTile(indexTile) {
-        let newTiles = this.state.tiles;
-        newTiles[indexTile] = <Tile key={indexTile} img={this.props.selectedTile} onClickTile={this.onClickTile.bind(this, indexTile)}/>;
+        let newMap = this.state.actualMap;
+        newMap[indexTile] = <Tile key={indexTile} img={this.state.selectedTile} onClickTile={this.onClickTile.bind(this, indexTile)}/>;
         this.setState({
-            tiles: newTiles
+            actualMap: newMap
         })
     }
 
-    generateEmptyTiles() {
-        let emptyTiles = [];
+    paintAllMap(tile){
+        let newMap = [];
         for (let index = 0; index < (screen.height / 32) * (screen.width / 32); index++){
-            emptyTiles.push(<Tile 
+            newMap.push(<Tile 
                 key={index} 
-                img={tileset('./tile-0.png')} 
+                img={tile} 
                 onClickTile={this.onClickTile.bind(this, index)}/>)
         };
-        return emptyTiles;
+        return newMap;
     }
 
     render() {
         return ( 
             <div>
+                <Button onClick={ ()=> this.setState({ open: !this.state.open }) }>
+                    Editar
+                </Button>
+
+                <EditModeContainer
+                    open = {this.state.open}
+                    onClickEditModeTile = {index => this.setState({ selectedTile: tileset(`./tile-${index}.png`) })}
+                    selectedTile = {this.state.selectedTile}
+                    onClickPaintAll = {() => this.setState({
+                        actualMap: this.paintAllMap(this.state.selectedTile)
+                    })}
+                />
+
                 <Map
                     img = {tileset('./tile-1.png')}
-                    tiles = {this.state.tiles}
+                    map = {this.state.actualMap}
                 />
             </div>
         );
