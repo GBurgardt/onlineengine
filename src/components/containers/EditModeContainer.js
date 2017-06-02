@@ -9,7 +9,7 @@ class EditModeContainer extends Component {
     
     generateEditModeTileset() {
         let editModeTiles = [];
-        for (let index = 0; index < tileset.keys().length - 1; index++){
+        for (let index = 0; index < tileset.keys().length - 2; index++){
             editModeTiles.push(<Tile 
                 key={index} 
                 class={'EditMode'}
@@ -23,14 +23,15 @@ class EditModeContainer extends Component {
 
     render() {
         return ( 
-            <div>
-                <EditMode 
-                    open = { this.props.open }
-                    selectedTile = { this.props.selectedTile }
-                    tileset = {this.generateEditModeTileset()}
-                    onClickPaintAll = {this.props.onClickPaintAll}
-                />
-            </div>
+            <EditMode 
+                actualLayer = {this.props.actualLayer}
+                onClickEditButton = {this.props.onClickEditButton}
+                open = { this.props.open }
+                selectedTile = { this.props.selectedTile }
+                tileset = {this.generateEditModeTileset()}
+                onClickPaintAll = {this.props.onClickPaintAll}
+                onClickLayer = {this.props.onClickLayer}
+            />
         );
     }
 }

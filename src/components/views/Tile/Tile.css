@@ -4,6 +4,10 @@
 }
 
 .EditMode:active {
-    border-style: solid;
-    border-width: 1px;
+    background-color: rgba(0, 0, 0, 0.3)
+}
+
+/*TODO: Dont work*/
+.Tile:hover {
+    cursor: default;
 }

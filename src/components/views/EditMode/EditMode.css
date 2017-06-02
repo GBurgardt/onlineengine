@@ -1,3 +1,13 @@
 .editmode {
     height: 500px;
 }
+
+.btn-selected {
+    color: red;
+}
+
+.tileset {
+    max-height: 550px;
+    overflow-y: scroll;
+    width: 285px;
+}

@@ -1,9 +1,9 @@
-/*eslint no-restricted-globals: ["error", "event"]*/
 import React, { Component } from 'react';
 import Tile from '../views/Tile/Tile';
 import Map from '../views/Map/Map';
 import EditModeContainer from './EditModeContainer'
-import { Button } from 'react-bootstrap';
+import { Button, Row } from 'react-bootstrap';
+import constants from '../../utils/Constants';
 
 let tileset = require.context('../../assets/tileset', true);
 
@@ -12,21 +12,40 @@ class MapContainer extends Component {
         super(props);
         this.state = {
             open: false,
-            actualMap: this.paintAllMap(tileset('./tile-19.png'))
+            actualLayer: 'ground',
+            ground: this.paintAllMap(tileset(constants.emptyTile)),
+            layer1: this.paintAllMap(tileset(constants.emptyTile)),
         };
     }
 
-    onClickTile(indexTile) {
-        let newMap = this.state.actualMap;
-        newMap[indexTile] = <Tile key={indexTile} img={this.state.selectedTile} onClickTile={this.onClickTile.bind(this, indexTile)}/>;
+    onClickLayer(selectedLayer){
         this.setState({
-            actualMap: newMap
+            actualLayer: selectedLayer
         })
+    }
+
+    onClickTile(indexTile) {  
+        console.log('onClickTile');
+        let newLayerMap = this.state[this.state.actualLayer];          
+        newLayerMap[indexTile] = <Tile key={indexTile} img={this.state.selectedTile} onClickTile={this.onClickTile.bind(this, indexTile)}/>;
+        this.setLayer(this.state.actualLayer, newLayerMap);
+    }
+
+    setLayer(layer, layerMap){
+        if (layer === 'ground'){
+            this.setState({
+                ground: layerMap
+            })
+        } else {
+            this.setState({
+                layer1: layerMap
+            })
+        }
     }
 
     paintAllMap(tile){
         let newMap = [];
-        for (let index = 0; index < (screen.height / 32) * (screen.width / 32); index++){
+        for (let index = 0; index < constants.maxTiles; index++){
             newMap.push(<Tile 
                 key={index} 
                 img={tile} 
@@ -37,25 +56,27 @@ class MapContainer extends Component {
 
     render() {
         return ( 
-            <div>
-                <Button onClick={ ()=> this.setState({ open: !this.state.open }) }>
-                    Editar
-                </Button>
-
+            <Row>
                 <EditModeContainer
+                    actualLayer = {this.state.actualLayer}
+                    onClickEditButton = {()=> this.setState({ open: !this.state.open }) }
                     open = {this.state.open}
                     onClickEditModeTile = {index => this.setState({ selectedTile: tileset(`./tile-${index}.png`) })}
                     selectedTile = {this.state.selectedTile}
                     onClickPaintAll = {() => this.setState({
-                        actualMap: this.paintAllMap(this.state.selectedTile)
+                        ground: this.paintAllMap(this.state.selectedTile)
+                    })}
+                    onClickLayer = {selectedLayer => this.setState({
+                        actualLayer: selectedLayer
                     })}
                 />
 
                 <Map
                     img = {tileset('./tile-1.png')}
-                    map = {this.state.actualMap}
+                    ground = {this.state.ground}
+                    layer1 = {this.state.layer1}
                 />
-            </div>
+            </Row>
         );
     }
 }
